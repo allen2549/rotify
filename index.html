@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Meu Treino</title>
+    
+    <!-- Manifest PWA Inline -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTWV1IFRyZWlubyIsInNob3J0X25hbWUiOiJUcmVpbm8iLCJzdGFydF91cmwiOiIuLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMxYTFhMWEiLCJ0aGVtZV9jb2xvciI6IiMxYTFhMWEiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJyUzRSUzQ3RleHQgeT0nLjllbScgZm9udC1zaXplPSc5MCclM0Xwn4qqJTNDL3RleHQlM0UlM0Mvc3ZnJTNFIiwic2l6ZXMiOiI1MTJ4NTEyIiwidHlwZSI6ImltYWdlL3N2Zyt4bWwiLCJwdXJwb3NlIjoiYW55IG1hc2thYmxlIn1dfQ==">
+
+    <style>
+        /* ================================
+           RESET E BASE
+           ================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            padding-bottom: env(safe-area-inset-bottom);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ================================
+           CONTAINER PRINCIPAL (Apple Style)
+           ================================ */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0;
+            background: #000000;
+        }
+
+        /* Header Apple Style */
+        .header {
+            padding: 60px 20px 32px 20px;
+            background: #000000;
+        }
+
+        .header h1 {
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 17px;
+            color: #8e8e93;
+            font-weight: 400;
+            letter-spacing: -0.2px;
+        }
+
+        /* ================================
+           BOTÕES (Apple Style)
+           ================================ */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            margin-bottom: 10px;
+            letter-spacing: -0.3px;
+        }
+
+        .btn-primary {
+            background: #0a84ff;
+            color: #ffffff;
+        }
+
+        .btn-primary:active {
+            background: #0070e0;
+            transform: scale(0.97);
+        }
+
+        .btn-secondary {
+            background: #1c1c1e;
+            color: #ffffff;
+        }
+
+        .btn-secondary:active {
+            background: #2c2c2e;
+            transform: scale(0.97);
+        }
+
+        .btn-success {
+            background: #30d158;
+            color: #000000;
+        }
+
+        .btn-success:active {
+            background: #28c04a;
+            transform: scale(0.97);
+        }
+
+        /* ================================
+           CARDS (Apple Style)
+           ================================ */
+        .card {
+            background: #1c1c1e;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 10px 20px;
+            border: 0.5px solid #2c2c2e;
+        }
+
+        /* ================================
+           TELA INICIAL
+           ================================ */
+        #telaInicial {
+            padding-top: 0;
+        }
+
+        .upload-area {
+            margin: 20px;
+            padding: 48px 24px;
+            border: 2px dashed #3a3a3c;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #1c1c1e;
+        }
+
+        .upload-area:active {
+            border-color: #0a84ff;
+            background: #2c2c2e;
+            transform: scale(0.98);
+        }
+
+        .upload-area p {
+            font-size: 15px;
+            color: #8e8e93;
+            margin-top: 12px;
+            letter-spacing: -0.2px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .dias-container {
+            padding: 0 20px 24px 20px;
+        }
+
+        .dia-btn {
+            background: #1c1c1e;
+            margin-bottom: 12px;
+            padding: 20px;
+            border-radius: 16px;
+            border: 0.5px solid #2c2c2e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dia-btn:active {
+            background: #2c2c2e;
+            transform: scale(0.98);
+        }
+
+        .dia-btn-info h3 {
+            font-size: 17px;
+            margin-bottom: 4px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: #ffffff;
+        }
+
+        .dia-btn-info p {
+            font-size: 15px;
+            color: #8e8e93;
+            letter-spacing: -0.2px;
+        }
+
+        .dia-btn-icon {
+            font-size: 22px;
+            opacity: 0.8;
+        }
+
+        /* ================================
+           TELA DE EXECUÇÃO
+           ================================ */
+        #telaExecucao {
+            display: none;
+        }
+
+        .top-bar {
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 0.5px solid #2c2c2e;
+        }
+
+        .btn-voltar {
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 17px;
+            color: #0a84ff;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-voltar:active {
+            background: #1c1c1e;
+        }
+
+        .top-bar h2 {
+            font-size: 17px;
+            font-weight: 600;
+            flex: 1;
+            letter-spacing: -0.3px;
+        }
+
+        .exercicio-card {
+            margin: 10px 20px;
+            padding: 20px;
+            background: #1c1c1e;
+            border-radius: 16px;
+            border: 0.5px solid #2c2c2e;
+            transition: all 0.3s ease;
+        }
+
+        .exercicio-card.concluido {
+            opacity: 0.5;
+            background: #1a2e1a;
+            border-color: #30d158;
+        }
+
+        .exercicio-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: #ffffff;
+            font-weight: 600;
+            letter-spacing: -0.4px;
+        }
+
+        .exercicio-info {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            color: #8e8e93;
+            font-size: 15px;
+            letter-spacing: -0.2px;
+        }
+
+        .exercicio-acoes {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .exercicio-acoes button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: -0.2px;
+        }
+
+        .btn-descanso {
+            background: #ff9f0a;
+            color: #000000;
+        }
+
+        .btn-descanso:active {
+            background: #e68a00;
+            transform: scale(0.97);
+        }
+
+        .btn-concluir {
+            background: #30d158;
+            color: #000000;
+        }
+
+        .btn-concluir:active {
+            background: #28c04a;
+            transform: scale(0.97);
+        }
+
+        /* ================================
+           TEMPORIZADOR
+           ================================ */
+        .timer-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-overlay.ativo {
+            display: flex;
+        }
+
+        .timer-content {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .timer-display {
+            font-size: 90px;
+            font-weight: 300;
+            color: #ffffff;
+            margin: 32px 0;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -2px;
+        }
+
+        .timer-label {
+            font-size: 13px;
+            color: #8e8e93;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .timer-exercicio {
+            font-size: 22px;
+            color: #ffffff;
+            margin-bottom: 32px;
+            font-weight: 600;
+            letter-spacing: -0.4px;
+        }
+
+        .btn-fechar-timer {
+            background: #ff453a;
+            color: #ffffff;
+            padding: 14px 48px;
+            border-radius: 12px;
+            border: none;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: -0.3px;
+            transition: all 0.2s;
+        }
+
+        .btn-fechar-timer:active {
+            background: #e03a30;
+            transform: scale(0.97);
+        }
+
+        /* ================================
+           UTILITÁRIOS
+           ================================ */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 24px;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            color: #8e8e93;
+            line-height: 1.5;
+            letter-spacing: -0.2px;
+        }
+
+        /* ================================
+           ANIMAÇÕES
+           ================================ */
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(8px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .card, .exercicio-card, .dia-btn {
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ================================
+           RESPONSIVIDADE
+           ================================ */
+        @media (max-width: 380px) {
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .timer-display {
+                font-size: 72px;
+            }
+        }
+
+        /* ================================
+           SEPARADORES E DETALHES
+           ================================ */
+        .section-divider {
+            height: 0.5px;
+            background: #2c2c2e;
+            margin: 24px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ================================
+             TELA INICIAL
+             ================================ -->
+        <div id="telaInicial">
+            <div class="header">
+                <h1>Meu Treino</h1>
+                <p id="headerSubtitle">Carregar treino para começar</p>
+            </div>
+
+            <div id="uploadSection">
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <div style="font-size: 48px;">📁</div>
+                    <p>Toque para carregar seu treino (JSON)</p>
+                </div>
+                <input type="file" id="fileInput" accept=".json">
+            </div>
+
+            <div id="diasContainer" class="dias-container hidden">
+                <!-- Dias serão renderizados aqui -->
+            </div>
+
+            <div id="acoesTreino" class="hidden" style="padding: 0 24px 24px 24px;">
+                <button class="btn btn-secondary" onclick="substituirTreino()">
+                    📤 Carregar novo treino
+                </button>
+            </div>
+        </div>
+
+        <!-- ================================
+             TELA DE EXECUÇÃO
+             ================================ -->
+        <div id="telaExecucao">
+            <div class="top-bar">
+                <button class="btn-voltar" onclick="voltarParaInicio()">←</button>
+                <h2 id="nomeDiaAtual">Dia A</h2>
+            </div>
+
+            <div id="exerciciosContainer">
+                <!-- Exercícios serão renderizados aqui -->
+            </div>
+
+            <div style="padding: 24px;">
+                <button class="btn btn-secondary" onclick="voltarParaInicio()">
+                    Finalizar treino
+                </button>
+            </div>
+        </div>
+
+        <!-- ================================
+             OVERLAY DO TEMPORIZADOR
+             ================================ -->
+        <div id="timerOverlay" class="timer-overlay">
+            <div class="timer-content">
+                <div class="timer-label">Tempo de descanso</div>
+                <div class="timer-exercicio" id="timerExercicioNome"></div>
+                <div class="timer-display" id="timerDisplay">00:00</div>
+                <button class="btn-fechar-timer" onclick="fecharTimer()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================================
+        // VARIÁVEIS GLOBAIS
+        // ================================
+        let treinoAtual = null;
+        let diaAtual = null;
+        let progressoAtual = {};
+        let timerInterval = null;
+        let tempoRestante = 0;
+
+        // ================================
+        // INICIALIZAÇÃO
+        // ================================
+        window.addEventListener('load', () => {
+            // Registrar Service Worker para PWA
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register(getServiceWorkerCode())
+                    .then(() => console.log('Service Worker registrado'))
+                    .catch(err => console.log('Erro ao registrar SW:', err));
+            }
+
+            // Carregar treino salvo
+            carregarTreinoSalvo();
+
+            // Event listener para upload de arquivo
+            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+        });
+
+        // ================================
+        // SERVICE WORKER INLINE
+        // ================================
+        function getServiceWorkerCode() {
+            const swCode = `
+                const CACHE_NAME = 'treino-app-v1';
+                
+                self.addEventListener('install', (event) => {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME).then((cache) => {
+                            return cache.addAll(['/']);
+                        })
+                    );
+                });
+
+                self.addEventListener('fetch', (event) => {
+                    event.respondWith(
+                        caches.match(event.request).then((response) => {
+                            return response || fetch(event.request);
+                        })
+                    );
+                });
+            `;
+            
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            return URL.createObjectURL(blob);
+        }
+
+        // ================================
+        // UPLOAD E VALIDAÇÃO DO JSON
+        // ================================
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const json = JSON.parse(e.target.result);
+                    
+                    // Validação básica
+                    if (!json.nome || !json.dias || !Array.isArray(json.dias)) {
+                        alert('❌ JSON inválido. Verifique a estrutura do arquivo.');
+                        return;
+                    }
+
+                    // Salvar treino
+                    treinoAtual = json;
+                    localStorage.setItem('treinoAtual', JSON.stringify(json));
+                    
+                    // Renderizar
+                    renderizarTreino();
+                    
+                    alert('✅ Treino carregado com sucesso!');
+                } catch (error) {
+                    alert('❌ Erro ao ler arquivo JSON. Verifique o formato.');
+                    console.error(error);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ================================
+        // CARREGAR TREINO SALVO
+        // ================================
+        function carregarTreinoSalvo() {
+            const treinoSalvo = localStorage.getItem('treinoAtual');
+            if (treinoSalvo) {
+                try {
+                    treinoAtual = JSON.parse(treinoSalvo);
+                    renderizarTreino();
+                } catch (error) {
+                    console.error('Erro ao carregar treino salvo:', error);
+                }
+            }
+        }
+
+        // ================================
+        // RENDERIZAR TREINO NA TELA INICIAL
+        // ================================
+        function renderizarTreino() {
+            if (!treinoAtual) return;
+
+            // Atualizar header
+            document.getElementById('headerSubtitle').textContent = treinoAtual.nome;
+
+            // Ocultar área de upload
+            document.getElementById('uploadSection').classList.add('hidden');
+            
+            // Mostrar botão de substituir
+            document.getElementById('acoesTreino').classList.remove('hidden');
+
+            // Renderizar dias
+            const diasContainer = document.getElementById('diasContainer');
+            diasContainer.classList.remove('hidden');
+            diasContainer.innerHTML = '';
+
+            treinoAtual.dias.forEach(dia => {
+                const diaElement = document.createElement('div');
+                diaElement.className = 'dia-btn';
+                diaElement.onclick = () => iniciarDia(dia.id);
+                
+                diaElement.innerHTML = `
+                    <div class="dia-btn-info">
+                        <h3>Dia ${dia.id}</h3>
+                        <p>${dia.nome} • ${dia.exercicios.length} exercícios</p>
+                    </div>
+                    <div class="dia-btn-icon">💪</div>
+                `;
+                
+                diasContainer.appendChild(diaElement);
+            });
+        }
+
+        // ================================
+        // SUBSTITUIR TREINO
+        // ================================
+        function substituirTreino() {
+            if (confirm('Deseja carregar um novo treino? O atual será substituído.')) {
+                document.getElementById('fileInput').click();
+            }
+        }
+
+        // ================================
+        // INICIAR DIA DE TREINO
+        // ================================
+        function iniciarDia(diaId) {
+            // Encontrar dia
+            diaAtual = treinoAtual.dias.find(d => d.id === diaId);
+            if (!diaAtual) return;
+
+            // Carregar progresso do dia
+            const dataHoje = new Date().toISOString().split('T')[0];
+            const chaveProgresso = `progresso_${diaId}_${dataHoje}`;
+            const progressoSalvo = localStorage.getItem(chaveProgresso);
+            
+            if (progressoSalvo) {
+                progressoAtual = JSON.parse(progressoSalvo);
+            } else {
+                progressoAtual = {};
+            }
+
+            // Renderizar tela de execução
+            renderizarExecucao();
+
+            // Trocar telas
+            document.getElementById('telaInicial').style.display = 'none';
+            document.getElementById('telaExecucao').style.display = 'block';
+        }
+
+        // ================================
+        // RENDERIZAR EXECUÇÃO
+        // ================================
+        function renderizarExecucao() {
+            document.getElementById('nomeDiaAtual').textContent = `Dia ${diaAtual.id} - ${diaAtual.nome}`;
+
+            const container = document.getElementById('exerciciosContainer');
+            container.innerHTML = '';
+
+            diaAtual.exercicios.forEach((exercicio, index) => {
+                const concluido = progressoAtual[index] || false;
+                
+                const card = document.createElement('div');
+                card.className = `exercicio-card ${concluido ? 'concluido' : ''}`;
+                card.id = `exercicio-${index}`;
+                
+                card.innerHTML = `
+                    <h3>${exercicio.nome}</h3>
+                    <div class="exercicio-info">
+                        <span>📊 ${exercicio.series} séries</span>
+                        <span>🔁 ${exercicio.reps} reps</span>
+                        <span>⏱️ ${exercicio.descanso}s</span>
+                    </div>
+                    <div class="exercicio-acoes">
+                        <button class="btn-descanso" onclick="iniciarDescanso(${index})">
+                            Iniciar descanso
+                        </button>
+                        <button class="btn-concluir" onclick="concluirExercicio(${index})">
+                            ${concluido ? '✓ Concluído' : 'Concluir'}
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // ================================
+        // INICIAR DESCANSO
+        // ================================
+        function iniciarDescanso(index) {
+            const exercicio = diaAtual.exercicios[index];
+            
+            // Configurar timer
+            tempoRestante = exercicio.descanso;
+            document.getElementById('timerExercicioNome').textContent = exercicio.nome;
+            
+            // Mostrar overlay
+            document.getElementById('timerOverlay').classList.add('ativo');
+            
+            // Atualizar display
+            atualizarTimer();
+            
+            // Iniciar contagem
+            timerInterval = setInterval(() => {
+                tempoRestante--;
+                atualizarTimer();
+                
+                if (tempoRestante <= 0) {
+                    finalizarDescanso();
+                }
+            }, 1000);
+        }
+
+        // ================================
+        // ATUALIZAR DISPLAY DO TIMER
+        // ================================
+        function atualizarTimer() {
+            const minutos = Math.floor(tempoRestante / 60);
+            const segundos = tempoRestante % 60;
+            const display = `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+            document.getElementById('timerDisplay').textContent = display;
+        }
+
+        // ================================
+        // FINALIZAR DESCANSO
+        // ================================
+        function finalizarDescanso() {
+            clearInterval(timerInterval);
+            
+            // Vibrar dispositivo
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+            
+            // Mostrar mensagem
+            document.getElementById('timerDisplay').textContent = '00:00';
+            document.getElementById('timerExercicioNome').textContent = '✅ Descanso finalizado!';
+        }
+
+        // ================================
+        // FECHAR TIMER
+        // ================================
+        function fecharTimer() {
+            clearInterval(timerInterval);
+            document.getElementById('timerOverlay').classList.remove('ativo');
+        }
+
+        // ================================
+        // CONCLUIR EXERCÍCIO
+        // ================================
+        function concluirExercicio(index) {
+            // Marcar como concluído
+            progressoAtual[index] = true;
+            
+            // Salvar progresso
+            const dataHoje = new Date().toISOString().split('T')[0];
+            const chaveProgresso = `progresso_${diaAtual.id}_${dataHoje}`;
+            localStorage.setItem(chaveProgresso, JSON.stringify(progressoAtual));
+            
+            // Atualizar visual
+            const card = document.getElementById(`exercicio-${index}`);
+            card.classList.add('concluido');
+            
+            const btnConcluir = card.querySelector('.btn-concluir');
+            btnConcluir.textContent = '✓ Concluído';
+        }
+
+        // ================================
+        // VOLTAR PARA INÍCIO
+        // ================================
+        function voltarParaInicio() {
+            document.getElementById('telaExecucao').style.display = 'none';
+            document.getElementById('telaInicial').style.display = 'block';
+            diaAtual = null;
+        }
+    </script>
+</body>
+</html>
