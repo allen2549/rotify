@@ -471,9 +471,9 @@
             <div id="uploadSection">
                 <div class="upload-area" onclick="document.getElementById('fileInput').click()">
                     <div style="font-size: 48px;">📁</div>
-                    <p>Toque para carregar seu treino (JSON)</p>
+                    <p>Toque para carregar seu treino (.txt)</p>
                 </div>
-                <input type="file" id="fileInput" accept=".json">
+                <input type="file" id="fileInput" accept=".txt">
             </div>
 
             <div id="diasContainer" class="dias-container hidden">
@@ -577,7 +577,7 @@
         }
 
         // ================================
-        // UPLOAD E VALIDAÇÃO DO JSON
+        // UPLOAD E VALIDAÇÃO DO TXT
         // ================================
         function handleFileUpload(event) {
             const file = event.target.files[0];
@@ -586,28 +586,121 @@
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
-                    const json = JSON.parse(e.target.result);
+                    const texto = e.target.result;
+                    const treino = parseTreinoTxt(texto);
                     
-                    // Validação básica
-                    if (!json.nome || !json.dias || !Array.isArray(json.dias)) {
-                        alert('❌ JSON inválido. Verifique a estrutura do arquivo.');
+                    if (!treino || !treino.nome || !treino.dias || treino.dias.length === 0) {
+                        alert('❌ Arquivo inválido. Verifique a estrutura do treino.');
                         return;
                     }
 
                     // Salvar treino
-                    treinoAtual = json;
-                    localStorage.setItem('treinoAtual', JSON.stringify(json));
+                    treinoAtual = treino;
+                    localStorage.setItem('treinoAtual', JSON.stringify(treino));
                     
                     // Renderizar
                     renderizarTreino();
                     
                     alert('✅ Treino carregado com sucesso!');
                 } catch (error) {
-                    alert('❌ Erro ao ler arquivo JSON. Verifique o formato.');
+                    alert('❌ Erro ao ler arquivo. Verifique o formato.');
                     console.error(error);
                 }
             };
             reader.readAsText(file);
+        }
+
+        // ================================
+        // PARSER DO ARQUIVO TXT
+        // ================================
+        function parseTreinoTxt(texto) {
+            const linhas = texto.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            
+            const treino = {
+                nome: '',
+                dias: []
+            };
+            
+            let diaAtualObj = null;
+            let exercicioAtualObj = null;
+            
+            for (let i = 0; i < linhas.length; i++) {
+                const linha = linhas[i];
+                
+                // Nome do treino (primeira linha)
+                if (i === 0) {
+                    treino.nome = linha;
+                    continue;
+                }
+                
+                // Início de um novo dia (formato: [A] ou [B] ou [C])
+                if (linha.match(/^\[([A-Z])\]/)) {
+                    // Salvar dia anterior se existir
+                    if (diaAtualObj) {
+                        if (exercicioAtualObj) {
+                            diaAtualObj.exercicios.push(exercicioAtualObj);
+                        }
+                        treino.dias.push(diaAtualObj);
+                    }
+                    
+                    const idDia = linha.match(/^\[([A-Z])\]/)[1];
+                    diaAtualObj = {
+                        id: idDia,
+                        nome: '',
+                        exercicios: []
+                    };
+                    exercicioAtualObj = null;
+                    continue;
+                }
+                
+                // Nome do dia (linha logo após [A])
+                if (diaAtualObj && !diaAtualObj.nome && !linha.startsWith('-')) {
+                    diaAtualObj.nome = linha;
+                    continue;
+                }
+                
+                // Exercício (linha começa com -)
+                if (linha.startsWith('-')) {
+                    // Salvar exercício anterior se existir
+                    if (exercicioAtualObj) {
+                        diaAtualObj.exercicios.push(exercicioAtualObj);
+                    }
+                    
+                    // Formato: - Nome do exercício | 3x12 | 90s
+                    const partes = linha.substring(1).split('|').map(p => p.trim());
+                    
+                    if (partes.length >= 3) {
+                        const nome = partes[0];
+                        const seriesReps = partes[1]; // Ex: "3x12" ou "4x8-10"
+                        const descanso = partes[2]; // Ex: "90s" ou "60"
+                        
+                        // Extrair séries e reps
+                        const matchSeriesReps = seriesReps.match(/(\d+)x(.+)/);
+                        const series = matchSeriesReps ? parseInt(matchSeriesReps[1]) : 3;
+                        const reps = matchSeriesReps ? matchSeriesReps[2] : '12';
+                        
+                        // Extrair tempo de descanso (remover 's' se tiver)
+                        const descansoSegundos = parseInt(descanso.replace('s', ''));
+                        
+                        exercicioAtualObj = {
+                            nome: nome,
+                            series: series,
+                            reps: reps,
+                            descanso: descansoSegundos
+                        };
+                    }
+                }
+            }
+            
+            // Salvar último dia
+            if (diaAtualObj) {
+                if (exercicioAtualObj) {
+                    diaAtualObj.exercicios.push(exercicioAtualObj);
+                }
+                treino.dias.push(diaAtualObj);
+            }
+            
+            return treino;
         }
 
         // ================================
