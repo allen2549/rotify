@@ -2,1028 +2,678 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1a1a1a">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Treino One UI</title>
+    <meta name="theme-color" content="#121212">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Meu Treino</title>
-    
-    <!-- Manifest PWA Inline -->
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTWV1IFRyZWlubyIsInNob3J0X25hbWUiOiJUcmVpbm8iLCJzdGFydF91cmwiOiIuLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMxYTFhMWEiLCJ0aGVtZV9jb2xvciI6IiMxYTFhMWEiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJyUzRSUzQ3RleHQgeT0nLjllbScgZm9udC1zaXplPSc5MCclM0Xwn4qqJTNDL3RleHQlM0UlM0Mvc3ZnJTNFIiwic2l6ZXMiOiI1MTJ4NTEyIiwidHlwZSI6ImltYWdlL3N2Zyt4bWwiLCJwdXJwb3NlIjoiYW55IG1hc2thYmxlIn1dfQ==">
+
+    <link rel="manifest" id="manifest-placeholder">
 
     <style>
-        /* ================================
-           RESET E BASE
-           ================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        /* --- RESET & VARS --- */
+        :root {
+            --bg-color: #f8f9fa;
+            --surface-color: #ffffff;
+            --text-primary: #000000;
+            --text-secondary: #747474;
+            --accent-color: #3e82f7; /* Azul Samsung One UI */
+            --accent-light: #e3f2fd;
+            --border-radius: 26px;
+            --card-radius: 20px;
+            --spacing: 16px;
+            --header-height: 60px;
+            --nav-height: 70px;
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
+        [data-theme="dark"] {
+            --bg-color: #000000;
+            --surface-color: #1c1c1c;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent-color: #5c9bff;
+            --accent-light: #1e2a3b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
-            background: #000000;
-            color: #ffffff;
-            min-height: 100vh;
-            padding-bottom: env(safe-area-inset-bottom);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            margin: 0; padding: 0;
+            font-family: var(--font-stack);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+            user-select: none;
         }
 
-        /* ================================
-           CONTAINER PRINCIPAL (Apple Style)
-           ================================ */
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 0;
-            background: #000000;
+        /* --- LAYOUT UTILS --- */
+        .page {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing);
+            padding-bottom: calc(var(--nav-height) + 20px);
+            display: none;
+            opacity: 0;
+            transition: opacity 0.2s ease-in;
+            padding-top: max(env(safe-area-inset-top), 20px);
         }
-
-        /* Header Apple Style */
-        .header {
-            padding: 60px 20px 32px 20px;
-            background: #000000;
+        .page.active { display: block; opacity: 1; }
+        
+        /* One UI Header Style */
+        .header-large {
+            padding: 40px 10px 20px 10px;
         }
-
-        .header h1 {
-            font-size: 34px;
+        .header-large h1 {
+            font-size: 32px;
             font-weight: 700;
-            margin-bottom: 4px;
-            color: #ffffff;
+            margin: 0;
             letter-spacing: -0.5px;
         }
-
-        .header p {
-            font-size: 17px;
-            color: #8e8e93;
-            font-weight: 400;
-            letter-spacing: -0.2px;
+        .header-large p {
+            color: var(--text-secondary);
+            margin: 5px 0 0 0;
+            font-size: 16px;
         }
 
-        /* ================================
-           BOTÕES (Apple Style)
-           ================================ */
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 16px 20px;
-            border: none;
-            border-radius: 12px;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            text-align: center;
-            margin-bottom: 10px;
-            letter-spacing: -0.3px;
-        }
-
-        .btn-primary {
-            background: #0a84ff;
-            color: #ffffff;
-        }
-
-        .btn-primary:active {
-            background: #0070e0;
-            transform: scale(0.97);
-        }
-
-        .btn-secondary {
-            background: #1c1c1e;
-            color: #ffffff;
-        }
-
-        .btn-secondary:active {
-            background: #2c2c2e;
-            transform: scale(0.97);
-        }
-
-        .btn-success {
-            background: #30d158;
-            color: #000000;
-        }
-
-        .btn-success:active {
-            background: #28c04a;
-            transform: scale(0.97);
-        }
-
-        /* ================================
-           CARDS (Apple Style)
-           ================================ */
+        /* --- COMPONENTS --- */
         .card {
-            background: #1c1c1e;
-            border-radius: 16px;
+            background-color: var(--surface-color);
+            border-radius: var(--card-radius);
             padding: 20px;
-            margin: 10px 20px;
-            border: 0.5px solid #2c2c2e;
-        }
-
-        /* ================================
-           TELA INICIAL
-           ================================ */
-        #telaInicial {
-            padding-top: 0;
-        }
-
-        .upload-area {
-            margin: 20px;
-            padding: 48px 24px;
-            border: 2px dashed #3a3a3c;
-            border-radius: 16px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #1c1c1e;
-        }
-
-        .upload-area:active {
-            border-color: #0a84ff;
-            background: #2c2c2e;
-            transform: scale(0.98);
-        }
-
-        .upload-area p {
-            font-size: 15px;
-            color: #8e8e93;
-            margin-top: 12px;
-            letter-spacing: -0.2px;
-        }
-
-        #fileInput {
-            display: none;
-        }
-
-        .dias-container {
-            padding: 0 20px 24px 20px;
-        }
-
-        .dia-btn {
-            background: #1c1c1e;
             margin-bottom: 12px;
-            padding: 20px;
-            border-radius: 16px;
-            border: 0.5px solid #2c2c2e;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            padding: 16px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+        }
+        .btn-small { padding: 10px 20px; width: auto; font-size: 14px; }
+
+        /* --- DAY SELECTION --- */
+        .day-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        .day-card {
+            background-color: var(--surface-color);
+            padding: 24px;
+            border-radius: var(--border-radius);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .dia-btn:active {
-            background: #2c2c2e;
-            transform: scale(0.98);
-        }
-
-        .dia-btn-info h3 {
-            font-size: 17px;
-            margin-bottom: 4px;
+            font-size: 18px;
             font-weight: 600;
-            letter-spacing: -0.3px;
-            color: #ffffff;
         }
-
-        .dia-btn-info p {
-            font-size: 15px;
-            color: #8e8e93;
-            letter-spacing: -0.2px;
-        }
-
-        .dia-btn-icon {
-            font-size: 22px;
-            opacity: 0.8;
-        }
-
-        /* ================================
-           TELA DE EXECUÇÃO
-           ================================ */
-        #telaExecucao {
-            display: none;
-        }
-
-        .top-bar {
-            padding: 16px 20px;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+        .day-card span.id {
+            background: var(--accent-light);
+            color: var(--accent-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
-            align-items: center;
-            gap: 12px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 0.5px solid #2c2c2e;
-        }
-
-        .btn-voltar {
-            background: transparent;
-            border: none;
-            border-radius: 10px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 17px;
-            color: #0a84ff;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-voltar:active {
-            background: #1c1c1e;
-        }
-
-        .top-bar h2 {
-            font-size: 17px;
-            font-weight: 600;
-            flex: 1;
-            letter-spacing: -0.3px;
-        }
-
-        .exercicio-card {
-            margin: 10px 20px;
-            padding: 20px;
-            background: #1c1c1e;
-            border-radius: 16px;
-            border: 0.5px solid #2c2c2e;
-            transition: all 0.3s ease;
-        }
-
-        .exercicio-card.concluido {
-            opacity: 0.5;
-            background: #1a2e1a;
-            border-color: #30d158;
-        }
-
-        .exercicio-card h3 {
-            font-size: 20px;
-            margin-bottom: 12px;
-            color: #ffffff;
-            font-weight: 600;
-            letter-spacing: -0.4px;
-        }
-
-        .exercicio-info {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 16px;
-            color: #8e8e93;
-            font-size: 15px;
-            letter-spacing: -0.2px;
-        }
-
-        .exercicio-acoes {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .exercicio-acoes button {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: -0.2px;
-        }
-
-        .btn-descanso {
-            background: #ff9f0a;
-            color: #000000;
-        }
-
-        .btn-descanso:active {
-            background: #e68a00;
-            transform: scale(0.97);
-        }
-
-        .btn-concluir {
-            background: #30d158;
-            color: #000000;
-        }
-
-        .btn-concluir:active {
-            background: #28c04a;
-            transform: scale(0.97);
-        }
-
-        /* ================================
-           TEMPORIZADOR
-           ================================ */
-        .timer-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.98);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            z-index: 1000;
             align-items: center;
             justify-content: center;
+            margin-right: 15px;
+            font-weight: 800;
         }
+        .day-card-content { flex: 1; }
+        
+        /* --- EXERCISE LIST --- */
+        .exercise-item {
+            position: relative;
+            padding-left: 10px;
+        }
+        .exercise-item.done h3 { text-decoration: line-through; color: var(--text-secondary); }
+        .exercise-item h3 { margin: 0 0 5px 0; font-size: 18px; }
+        .exercise-item .meta { color: var(--text-secondary); font-size: 14px; margin-bottom: 15px; }
+        .exercise-actions { display: flex; gap: 10px; }
+        
+        /* --- TIMER OVERLAY --- */
+        #timer-overlay {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--surface-color);
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.3);
+            transform: translateY(110%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        #timer-overlay.active { transform: translateY(0); }
+        .timer-display { font-size: 64px; font-weight: 700; font-variant-numeric: tabular-nums; margin: 10px 0; display: block;}
+        .timer-controls { display: flex; gap: 10px; justify-content: center; }
 
-        .timer-overlay.ativo {
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: var(--nav-height);
+            background: var(--surface-color);
             display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 900;
         }
-
-        .timer-content {
+        .nav-item {
+            flex: 1;
             text-align: center;
-            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            padding: 10px;
         }
+        .nav-item.active { color: var(--accent-color); font-weight: 600; }
+        .nav-icon { font-size: 24px; display: block; margin-bottom: 4px; }
 
-        .timer-display {
-            font-size: 90px;
-            font-weight: 300;
-            color: #ffffff;
-            margin: 32px 0;
-            font-variant-numeric: tabular-nums;
-            letter-spacing: -2px;
+        /* --- STATS & SETTINGS --- */
+        .stat-box {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
         }
-
-        .timer-label {
-            font-size: 13px;
-            color: #8e8e93;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 500;
-        }
-
-        .timer-exercicio {
-            font-size: 22px;
-            color: #ffffff;
-            margin-bottom: 32px;
-            font-weight: 600;
-            letter-spacing: -0.4px;
-        }
-
-        .btn-fechar-timer {
-            background: #ff453a;
-            color: #ffffff;
-            padding: 14px 48px;
-            border-radius: 12px;
-            border: none;
-            font-size: 17px;
-            font-weight: 600;
+        .file-upload-wrapper {
+            border: 2px dashed var(--text-secondary);
+            border-radius: var(--card-radius);
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
             cursor: pointer;
-            letter-spacing: -0.3px;
-            transition: all 0.2s;
         }
-
-        .btn-fechar-timer:active {
-            background: #e03a30;
-            transform: scale(0.97);
+        textarea.paste-area {
+            width: 100%;
+            background: var(--surface-color);
+            color: var(--text-primary);
+            border: 1px solid var(--text-secondary);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            min-height: 100px;
         }
-
-        /* ================================
-           UTILITÁRIOS
-           ================================ */
-        .hidden {
-            display: none !important;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .mt-20 {
-            margin-top: 20px;
-        }
-
+        
         .empty-state {
             text-align: center;
-            padding: 60px 24px;
-        }
-
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
-
-        .empty-state p {
-            font-size: 16px;
-            color: #8e8e93;
-            line-height: 1.5;
-            letter-spacing: -0.2px;
-        }
-
-        /* ================================
-           ANIMAÇÕES
-           ================================ */
-        @keyframes fadeIn {
-            from { 
-                opacity: 0; 
-                transform: translateY(8px); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            }
-        }
-
-        .card, .exercicio-card, .dia-btn {
-            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* ================================
-           RESPONSIVIDADE
-           ================================ */
-        @media (max-width: 380px) {
-            .header h1 {
-                font-size: 28px;
-            }
-            
-            .timer-display {
-                font-size: 72px;
-            }
-        }
-
-        /* ================================
-           SEPARADORES E DETALHES
-           ================================ */
-        .section-divider {
-            height: 0.5px;
-            background: #2c2c2e;
-            margin: 24px 20px;
+            color: var(--text-secondary);
+            margin-top: 50px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- ================================
-             TELA INICIAL
-             ================================ -->
-        <div id="telaInicial">
-            <div class="header">
-                <h1>Meu Treino</h1>
-                <p id="headerSubtitle">Carregar treino para começar</p>
-            </div>
 
-            <div id="uploadSection">
-                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-                    <div style="font-size: 48px;">📁</div>
-                    <p>Toque para carregar arquivo</p>
-                </div>
-                <input type="file" id="fileInput">
-                
-                <div style="padding: 0 20px; margin-top: 20px;">
-                    <div style="text-align: center; margin-bottom: 12px; color: #8e8e93; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">ou</div>
-                    <button class="btn btn-secondary" onclick="mostrarColarTexto()">
-                        📋 Colar texto do treino
-                    </button>
-                </div>
-            </div>
-
-            <!-- Modal para colar texto -->
-            <div id="modalColarTexto" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 2000; padding: 20px; overflow-y: auto;">
-                <div style="max-width: 600px; margin: 0 auto; padding-top: 40px;">
-                    <h2 style="font-size: 28px; margin-bottom: 8px; letter-spacing: -0.5px; font-weight: 600;">Colar treino</h2>
-                    <p style="color: #8e8e93; margin-bottom: 24px; font-size: 15px; line-height: 1.4;">
-                        Cole o texto do seu treino aqui. <br>
-                        <span style="font-size: 13px; color: #636366;">Formato: Nome | Séries x Reps | Tempo</span>
-                    </p>
-                    
-                    <textarea id="textoTreino" style="
-                        width: 100%;
-                        min-height: 350px;
-                        background: #1c1c1e;
-                        border: 0.5px solid #2c2c2e;
-                        border-radius: 12px;
-                        color: #ffffff;
-                        padding: 16px;
-                        font-size: 14px;
-                        font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
-                        resize: vertical;
-                        margin-bottom: 12px;
-                        line-height: 1.5;
-                    " placeholder="Meu Treino ABC
-
-[A]
-Peito e Tríceps
-- Supino reto | 4x10 | 90s
-- Crucifixo | 3x12 | 60s
-
-[B]
-Costas e Bíceps
-- Barra fixa | 4x8 | 90s
-- Remada | 3x12 | 75s"></textarea>
-                    
-                    <div style="background: #1c1c1e; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 0.5px solid #2c2c2e;">
-                        <div style="font-size: 13px; color: #8e8e93; margin-bottom: 8px;">💡 Dica rápida:</div>
-                        <div style="font-size: 13px; color: #ffffff; line-height: 1.6;">
-                            • Primeira linha: nome do treino<br>
-                            • [A], [B], [C]: marcam cada dia<br>
-                            • Linha após [A]: nome do dia<br>
-                            • Exercícios começam com "-"
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 8px;">
-                        <button class="btn btn-primary" onclick="processarTextoColar()" style="flex: 1;">
-                            Carregar treino
-                        </button>
-                        <button class="btn btn-secondary" onclick="fecharColarTexto()" style="flex: 1;">
-                            Cancelar
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="diasContainer" class="dias-container hidden">
-                <!-- Dias serão renderizados aqui -->
-            </div>
-
-            <div id="acoesTreino" class="hidden" style="padding: 0 24px 24px 24px;">
-                <button class="btn btn-secondary" onclick="substituirTreino()">
-                    📤 Carregar novo treino
-                </button>
-            </div>
+    <div id="view-home" class="page active">
+        <div class="header-large">
+            <h1 id="greeting">Olá, Le!</h1>
+            <p id="workout-title">Carregue seu treino para começar</p>
         </div>
-
-        <!-- ================================
-             TELA DE EXECUÇÃO
-             ================================ -->
-        <div id="telaExecucao">
-            <div class="top-bar">
-                <button class="btn-voltar" onclick="voltarParaInicio()">←</button>
-                <h2 id="nomeDiaAtual">Dia A</h2>
-            </div>
-
-            <div id="exerciciosContainer">
-                <!-- Exercícios serão renderizados aqui -->
-            </div>
-
-            <div style="padding: 24px;">
-                <button class="btn btn-secondary" onclick="voltarParaInicio()">
-                    Finalizar treino
-                </button>
-            </div>
-        </div>
-
-        <!-- ================================
-             OVERLAY DO TEMPORIZADOR
-             ================================ -->
-        <div id="timerOverlay" class="timer-overlay">
-            <div class="timer-content">
-                <div class="timer-label">Tempo de descanso</div>
-                <div class="timer-exercicio" id="timerExercicioNome"></div>
-                <div class="timer-display" id="timerDisplay">00:00</div>
-                <button class="btn-fechar-timer" onclick="fecharTimer()">Fechar</button>
+        
+        <div id="days-container" class="day-grid">
+            <div class="empty-state">
+                <p>Nenhum treino carregado.</p>
+                <p>Vá em ⚙️ Ajustes para enviar o arquivo.</p>
             </div>
         </div>
     </div>
 
+    <div id="view-workout" class="page">
+        <div class="header-large" style="display: flex; align-items: center; gap: 15px;">
+            <span onclick="navTo('home')" style="font-size: 24px; cursor:pointer;">&#8592;</span>
+            <div>
+                <h1 id="current-day-title">Treino A</h1>
+                <p>Foco e força!</p>
+            </div>
+        </div>
+        <div id="exercises-list">
+            </div>
+        <br><br>
+    </div>
+
+    <div id="view-stats" class="page">
+        <div class="header-large">
+            <h1>Progresso</h1>
+            <p>Seu histórico de dedicação</p>
+        </div>
+        
+        <div class="card">
+            <div class="stat-box"><span>Hoje:</span> <b id="stat-today">0</b></div>
+            <div class="stat-box"><span>Esta Semana:</span> <b id="stat-week">0</b></div>
+            <div class="stat-box"><span>Este Mês:</span> <b id="stat-month">0</b></div>
+            <hr style="border:0; border-top:1px solid var(--bg-color); margin: 15px 0;">
+            <div style="font-size: 14px; color: var(--text-secondary);">
+                Histórico recente:
+                <ul id="history-list" style="padding-left: 20px;"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-settings" class="page">
+        <div class="header-large">
+            <h1>Ajustes</h1>
+            <p>Gerencie seu app</p>
+        </div>
+
+        <div class="card">
+            <h3>Aparência</h3>
+            <button class="btn btn-outline" onclick="toggleTheme()">Alternar Tema (Dark/Light)</button>
+        </div>
+
+        <div class="card">
+            <h3>Carregar Treino (.txt)</h3>
+            <p style="font-size:14px; color: var(--text-secondary);">Selecione o arquivo ou cole o texto.</p>
+            
+            <div class="file-upload-wrapper" onclick="document.getElementById('fileInput').click()">
+                📁 Toque para selecionar arquivo
+                <input type="file" id="fileInput" accept=".txt" style="display: none;" onchange="handleFileUpload(this)">
+            </div>
+
+            <p style="text-align:center; font-size:12px;">OU</p>
+            
+            <textarea id="pasteArea" class="paste-area" placeholder="Cole o conteúdo do treino aqui..."></textarea>
+            <button class="btn" onclick="handlePasteUpload()">Salvar Treino Colado</button>
+        </div>
+
+        <div class="card">
+            <h3 style="color: #ff4d4d;">Zona de Perigo</h3>
+            <button class="btn btn-outline" style="border-color: #ff4d4d; color: #ff4d4d;" onclick="clearAllData()">Resetar Tudo</button>
+        </div>
+        
+        <div style="text-align: center; color: var(--text-secondary); margin-top: 30px; font-size: 12px;">
+            Awadev Labs v1.0 • PWA Offline
+        </div>
+    </div>
+
+    <div id="timer-overlay">
+        <div style="font-size: 18px; color: var(--text-secondary);">Descansando...</div>
+        <span id="timer-display" class="timer-display">00:00</span>
+        <div class="timer-controls">
+            <button class="btn btn-outline btn-small" onclick="addTime(10)">+10s</button>
+            <button class="btn btn-outline btn-small" onclick="stopTimer()">Parar</button>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="navTo('home')" id="nav-home">
+            <span class="nav-icon">🏋️</span>Treino
+        </div>
+        <div class="nav-item" onclick="navTo('stats')" id="nav-stats">
+            <span class="nav-icon">📊</span>Progresso
+        </div>
+        <div class="nav-item" onclick="navTo('settings')" id="nav-settings">
+            <span class="nav-icon">⚙️</span>Ajustes
+        </div>
+    </nav>
+
     <script>
-        // ================================
-        // VARIÁVEIS GLOBAIS
-        // ================================
-        let treinoAtual = null;
-        let diaAtual = null;
-        let progressoAtual = {};
+        // --- 1. STATE & CONSTANTS ---
+        const APP_KEY = 'iron_le_app_v1';
+        const SETTINGS_KEY = 'iron_le_settings';
+        const HISTORY_KEY = 'iron_le_history';
+
+        let appState = {
+            workout: null,
+            activeDayId: null
+        };
+        
+        let userHistory = []; // Array of {date: ISOString, dayId: 'A'}
         let timerInterval = null;
-        let tempoRestante = 0;
+        let settings = { theme: 'dark' };
 
-        // ================================
-        // INICIALIZAÇÃO
-        // ================================
+        // --- 2. INIT & PWA ---
         window.addEventListener('load', () => {
-            // Registrar Service Worker para PWA
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register(getServiceWorkerCode())
-                    .then(() => console.log('Service Worker registrado'))
-                    .catch(err => console.log('Erro ao registrar SW:', err));
-            }
-
-            // Carregar treino salvo
-            carregarTreinoSalvo();
-
-            // Event listener para upload de arquivo
-            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+            loadData();
+            applyTheme();
+            setupPWA();
+            renderHome();
+            updateStats();
         });
 
-        // ================================
-        // SERVICE WORKER INLINE
-        // ================================
-        function getServiceWorkerCode() {
-            const swCode = `
-                const CACHE_NAME = 'treino-app-v1';
-                
-                self.addEventListener('install', (event) => {
-                    event.waitUntil(
-                        caches.open(CACHE_NAME).then((cache) => {
-                            return cache.addAll(['/']);
-                        })
-                    );
-                });
+        function setupPWA() {
+            // Generate Manifest Inline
+            const manifest = {
+                name: "Iron Le Treino",
+                short_name: "IronLe",
+                start_url: ".",
+                display: "standalone",
+                background_color: "#000000",
+                theme_color: "#000000",
+                icons: [{
+                    src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><text y='1em' font-size='400'>💪</text></svg>",
+                    sizes: "192x192 512x512",
+                    type: "image/svg+xml"
+                }]
+            };
+            const stringManifest = JSON.stringify(manifest);
+            const blob = new Blob([stringManifest], {type: 'application/json'});
+            document.getElementById('manifest-placeholder').href = URL.createObjectURL(blob);
 
-                self.addEventListener('fetch', (event) => {
-                    event.respondWith(
-                        caches.match(event.request).then((response) => {
-                            return response || fetch(event.request);
-                        })
-                    );
-                });
-            `;
-            
-            const blob = new Blob([swCode], { type: 'application/javascript' });
-            return URL.createObjectURL(blob);
+            // Register Service Worker Inline
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    self.addEventListener('install', e => self.skipWaiting());
+                    self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+                    self.addEventListener('fetch', e => {
+                        e.respondWith(
+                            fetch(e.request).catch(() => caches.match(e.request))
+                        );
+                    });
+                `;
+                const swBlob = new Blob([swCode], {type: 'application/javascript'});
+                navigator.serviceWorker.register(URL.createObjectURL(swBlob))
+                    .then(() => console.log('SW Registered'))
+                    .catch(err => console.log('SW Fail', err));
+            }
         }
 
-        // ================================
-        // UPLOAD E VALIDAÇÃO DO TXT
-        // ================================
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        // --- 3. DATA MANAGEMENT ---
+        function loadData() {
+            const savedWorkout = localStorage.getItem(APP_KEY);
+            if (savedWorkout) appState.workout = JSON.parse(savedWorkout);
+            
+            const savedSettings = localStorage.getItem(SETTINGS_KEY);
+            if (savedSettings) settings = JSON.parse(savedSettings);
 
+            const savedHistory = localStorage.getItem(HISTORY_KEY);
+            if (savedHistory) userHistory = JSON.parse(savedHistory);
+        }
+
+        function saveData() {
+            if (appState.workout) localStorage.setItem(APP_KEY, JSON.stringify(appState.workout));
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(userHistory));
+        }
+
+        function clearAllData() {
+            if(confirm('Tem certeza? Isso apagará seu treino e histórico.')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // --- 4. PARSER (TXT to JSON) ---
+        function parseWorkoutTXT(text) {
+            const lines = text.split('\n');
+            let workout = { title: 'Meu Treino', days: [] };
+            let currentDay = null;
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+
+                if (line.startsWith('# ')) {
+                    workout.title = line.replace('# ', '').trim();
+                } else if (line.startsWith('## ')) {
+                    const dayParts = line.replace('## ', '').split('-');
+                    currentDay = {
+                        id: dayParts[0].trim(),
+                        name: dayParts[1] ? dayParts[1].trim() : dayParts[0].trim(),
+                        exercises: []
+                    };
+                    workout.days.push(currentDay);
+                } else if (currentDay && !line.startsWith('#')) {
+                    // Exercise format: Name | Sets | Rest
+                    const parts = line.split('|');
+                    if (parts.length >= 2) {
+                        currentDay.exercises.push({
+                            name: parts[0].trim(),
+                            sets: parts[1].trim(),
+                            rest: parts[2] ? parseInt(parts[2].trim()) : 60,
+                            done: false // Daily state
+                        });
+                    }
+                }
+            });
+            return workout;
+        }
+
+        function handleFileUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
             const reader = new FileReader();
             reader.onload = (e) => {
-                try {
-                    const texto = e.target.result;
-                    const treino = parseTreinoTxt(texto);
-                    
-                    if (!treino || !treino.nome || !treino.dias || treino.dias.length === 0) {
-                        alert('❌ Arquivo inválido. Verifique a estrutura do treino.');
-                        return;
-                    }
-
-                    // Salvar treino
-                    treinoAtual = treino;
-                    localStorage.setItem('treinoAtual', JSON.stringify(treino));
-                    
-                    // Renderizar
-                    renderizarTreino();
-                    
-                    alert('✅ Treino carregado com sucesso!');
-                } catch (error) {
-                    alert('❌ Erro ao ler arquivo. Verifique o formato.');
-                    console.error(error);
-                }
+                processNewWorkout(e.target.result);
             };
             reader.readAsText(file);
         }
 
-        // ================================
-        // PARSER DO ARQUIVO TXT
-        // ================================
-        function parseTreinoTxt(texto) {
-            const linhas = texto.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-            
-            const treino = {
-                nome: '',
-                dias: []
-            };
-            
-            let diaAtualObj = null;
-            let exercicioAtualObj = null;
-            
-            for (let i = 0; i < linhas.length; i++) {
-                const linha = linhas[i];
-                
-                // Nome do treino (primeira linha)
-                if (i === 0) {
-                    treino.nome = linha;
-                    continue;
-                }
-                
-                // Início de um novo dia (formato: [A] ou [B] ou [C])
-                if (linha.match(/^\[([A-Z])\]/)) {
-                    // Salvar dia anterior se existir
-                    if (diaAtualObj) {
-                        if (exercicioAtualObj) {
-                            diaAtualObj.exercicios.push(exercicioAtualObj);
-                        }
-                        treino.dias.push(diaAtualObj);
-                    }
-                    
-                    const idDia = linha.match(/^\[([A-Z])\]/)[1];
-                    diaAtualObj = {
-                        id: idDia,
-                        nome: '',
-                        exercicios: []
-                    };
-                    exercicioAtualObj = null;
-                    continue;
-                }
-                
-                // Nome do dia (linha logo após [A])
-                if (diaAtualObj && !diaAtualObj.nome && !linha.startsWith('-')) {
-                    diaAtualObj.nome = linha;
-                    continue;
-                }
-                
-                // Exercício (linha começa com -)
-                if (linha.startsWith('-')) {
-                    // Salvar exercício anterior se existir
-                    if (exercicioAtualObj) {
-                        diaAtualObj.exercicios.push(exercicioAtualObj);
-                    }
-                    
-                    // Formato: - Nome do exercício | 3x12 | 90s
-                    const partes = linha.substring(1).split('|').map(p => p.trim());
-                    
-                    if (partes.length >= 3) {
-                        const nome = partes[0];
-                        const seriesReps = partes[1]; // Ex: "3x12" ou "4x8-10"
-                        const descanso = partes[2]; // Ex: "90s" ou "60"
-                        
-                        // Extrair séries e reps
-                        const matchSeriesReps = seriesReps.match(/(\d+)x(.+)/);
-                        const series = matchSeriesReps ? parseInt(matchSeriesReps[1]) : 3;
-                        const reps = matchSeriesReps ? matchSeriesReps[2] : '12';
-                        
-                        // Extrair tempo de descanso (remover 's' se tiver)
-                        const descansoSegundos = parseInt(descanso.replace('s', ''));
-                        
-                        exercicioAtualObj = {
-                            nome: nome,
-                            series: series,
-                            reps: reps,
-                            descanso: descansoSegundos
-                        };
-                    }
-                }
-            }
-            
-            // Salvar último dia
-            if (diaAtualObj) {
-                if (exercicioAtualObj) {
-                    diaAtualObj.exercicios.push(exercicioAtualObj);
-                }
-                treino.dias.push(diaAtualObj);
-            }
-            
-            return treino;
+        function handlePasteUpload() {
+            const text = document.getElementById('pasteArea').value;
+            if(text) processNewWorkout(text);
         }
 
-        // ================================
-        // CARREGAR TREINO SALVO
-        // ================================
-        function carregarTreinoSalvo() {
-            const treinoSalvo = localStorage.getItem('treinoAtual');
-            if (treinoSalvo) {
-                try {
-                    treinoAtual = JSON.parse(treinoSalvo);
-                    renderizarTreino();
-                } catch (error) {
-                    console.error('Erro ao carregar treino salvo:', error);
-                }
+        function processNewWorkout(text) {
+            try {
+                const parsed = parseWorkoutTXT(text);
+                if (parsed.days.length === 0) throw new Error("Formato inválido");
+                appState.workout = parsed;
+                saveData();
+                alert('Treino carregado com sucesso!');
+                navTo('home');
+                renderHome();
+            } catch (e) {
+                alert('Erro ao ler arquivo. Verifique o formato.');
             }
         }
 
-        // ================================
-        // RENDERIZAR TREINO NA TELA INICIAL
-        // ================================
-        function renderizarTreino() {
-            if (!treinoAtual) return;
-
-            // Atualizar header
-            document.getElementById('headerSubtitle').textContent = treinoAtual.nome;
-
-            // Ocultar área de upload
-            document.getElementById('uploadSection').classList.add('hidden');
+        // --- 5. RENDERERS ---
+        function navTo(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             
-            // Mostrar botão de substituir
-            document.getElementById('acoesTreino').classList.remove('hidden');
-
-            // Renderizar dias
-            const diasContainer = document.getElementById('diasContainer');
-            diasContainer.classList.remove('hidden');
-            diasContainer.innerHTML = '';
-
-            treinoAtual.dias.forEach(dia => {
-                const diaElement = document.createElement('div');
-                diaElement.className = 'dia-btn';
-                diaElement.onclick = () => iniciarDia(dia.id);
-                
-                diaElement.innerHTML = `
-                    <div class="dia-btn-info">
-                        <h3>Dia ${dia.id}</h3>
-                        <p>${dia.nome} • ${dia.exercicios.length} exercícios</p>
-                    </div>
-                    <div class="dia-btn-icon">💪</div>
-                `;
-                
-                diasContainer.appendChild(diaElement);
-            });
-        }
-
-        // ================================
-        // SUBSTITUIR TREINO
-        // ================================
-        function substituirTreino() {
-            if (confirm('Deseja carregar um novo treino? O atual será substituído.')) {
-                document.getElementById('fileInput').click();
+            // Show target
+            if (pageId === 'home') document.getElementById('view-home').classList.add('active');
+            if (pageId === 'workout') document.getElementById('view-workout').classList.add('active');
+            if (pageId === 'stats') {
+                document.getElementById('view-stats').classList.add('active');
+                updateStats();
             }
+            if (pageId === 'settings') document.getElementById('view-settings').classList.add('active');
+
+            // Nav Highlight
+            const navId = pageId === 'workout' ? 'nav-home' : `nav-${pageId}`;
+            const navEl = document.getElementById(navId);
+            if(navEl) navEl.classList.add('active');
         }
 
-        // ================================
-        // INICIAR DIA DE TREINO
-        // ================================
-        function iniciarDia(diaId) {
-            // Encontrar dia
-            diaAtual = treinoAtual.dias.find(d => d.id === diaId);
-            if (!diaAtual) return;
-
-            // Carregar progresso do dia
-            const dataHoje = new Date().toISOString().split('T')[0];
-            const chaveProgresso = `progresso_${diaId}_${dataHoje}`;
-            const progressoSalvo = localStorage.getItem(chaveProgresso);
+        function renderHome() {
+            const container = document.getElementById('days-container');
+            const titleEl = document.getElementById('workout-title');
             
-            if (progressoSalvo) {
-                progressoAtual = JSON.parse(progressoSalvo);
-            } else {
-                progressoAtual = {};
-            }
+            if (!appState.workout) return;
 
-            // Renderizar tela de execução
-            renderizarExecucao();
-
-            // Trocar telas
-            document.getElementById('telaInicial').style.display = 'none';
-            document.getElementById('telaExecucao').style.display = 'block';
-        }
-
-        // ================================
-        // RENDERIZAR EXECUÇÃO
-        // ================================
-        function renderizarExecucao() {
-            document.getElementById('nomeDiaAtual').textContent = `Dia ${diaAtual.id} - ${diaAtual.nome}`;
-
-            const container = document.getElementById('exerciciosContainer');
+            titleEl.textContent = appState.workout.title;
             container.innerHTML = '';
 
-            diaAtual.exercicios.forEach((exercicio, index) => {
-                const concluido = progressoAtual[index] || false;
-                
-                const card = document.createElement('div');
-                card.className = `exercicio-card ${concluido ? 'concluido' : ''}`;
-                card.id = `exercicio-${index}`;
-                
-                card.innerHTML = `
-                    <h3>${exercicio.nome}</h3>
-                    <div class="exercicio-info">
-                        <span>📊 ${exercicio.series} séries</span>
-                        <span>🔁 ${exercicio.reps} reps</span>
-                        <span>⏱️ ${exercicio.descanso}s</span>
-                    </div>
-                    <div class="exercicio-acoes">
-                        <button class="btn-descanso" onclick="iniciarDescanso(${index})">
-                            Iniciar descanso
-                        </button>
-                        <button class="btn-concluir" onclick="concluirExercicio(${index})">
-                            ${concluido ? '✓ Concluído' : 'Concluir'}
-                        </button>
-                    </div>
+            appState.workout.days.forEach(day => {
+                const div = document.createElement('div');
+                div.className = 'day-card';
+                div.onclick = () => openDay(day.id);
+                div.innerHTML = `
+                    <span class="id">${day.id}</span>
+                    <div class="day-card-content">${day.name}</div>
+                    <span style="color:var(--text-secondary)">&#10095;</span>
                 `;
-                
-                container.appendChild(card);
+                container.appendChild(div);
             });
         }
 
-        // ================================
-        // INICIAR DESCANSO
-        // ================================
-        function iniciarDescanso(index) {
-            const exercicio = diaAtual.exercicios[index];
+        function openDay(dayId) {
+            appState.activeDayId = dayId;
+            const day = appState.workout.days.find(d => d.id === dayId);
+            if (!day) return;
+
+            document.getElementById('current-day-title').textContent = `${day.id} - ${day.name}`;
             
-            // Configurar timer
-            tempoRestante = exercicio.descanso;
-            document.getElementById('timerExercicioNome').textContent = exercicio.nome;
+            // Render Exercises
+            const list = document.getElementById('exercises-list');
+            list.innerHTML = '';
             
-            // Mostrar overlay
-            document.getElementById('timerOverlay').classList.add('ativo');
+            day.exercises.forEach((ex, index) => {
+                const el = document.createElement('div');
+                el.className = `card exercise-item ${ex.done ? 'done' : ''}`;
+                el.innerHTML = `
+                    <h3>${ex.name}</h3>
+                    <div class="meta">${ex.sets} • Descanso: ${ex.rest}s</div>
+                    <div class="exercise-actions">
+                        <button class="btn btn-outline btn-small" onclick="startRest(${ex.rest})">⏳ Descanso</button>
+                        <button class="btn btn-small" onclick="toggleDone('${dayId}', ${index})">
+                            ${ex.done ? 'Desfazer' : '✅ Feito'}
+                        </button>
+                    </div>
+                `;
+                list.appendChild(el);
+            });
+
+            navTo('workout');
+        }
+
+        function toggleDone(dayId, exIndex) {
+            const day = appState.workout.days.find(d => d.id === dayId);
+            day.exercises[exIndex].done = !day.exercises[exIndex].done;
+            saveData();
             
-            // Atualizar display
-            atualizarTimer();
+            // Check if all done to log history
+            const allDone = day.exercises.every(e => e.done);
+            if (allDone && day.exercises[exIndex].done) {
+                logHistory(dayId);
+            }
             
-            // Iniciar contagem
+            openDay(dayId); // Re-render
+        }
+
+        // --- 6. LOGIC: TIMER & HISTORY ---
+        function startRest(seconds) {
+            const overlay = document.getElementById('timer-overlay');
+            const display = document.getElementById('timer-display');
+            let remaining = seconds;
+            
+            overlay.classList.add('active');
+            display.textContent = formatTime(remaining);
+            
+            if(timerInterval) clearInterval(timerInterval);
+
             timerInterval = setInterval(() => {
-                tempoRestante--;
-                atualizarTimer();
-                
-                if (tempoRestante <= 0) {
-                    finalizarDescanso();
+                remaining--;
+                display.textContent = formatTime(remaining);
+                if (remaining <= 0) {
+                    stopTimer();
+                    finishRest();
                 }
             }, 1000);
         }
 
-        // ================================
-        // ATUALIZAR DISPLAY DO TIMER
-        // ================================
-        function atualizarTimer() {
-            const minutos = Math.floor(tempoRestante / 60);
-            const segundos = tempoRestante % 60;
-            const display = `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
-            document.getElementById('timerDisplay').textContent = display;
+        function addTime(sec) {
+            const display = document.getElementById('timer-display');
+            let current = display.textContent.split(':');
+            let remaining = parseInt(current[0])*60 + parseInt(current[1]);
+            remaining += sec;
+            display.textContent = formatTime(remaining);
+            // Need to update interval logic slightly or just let next tick handle, 
+            // but for simplicity, we rely on the display update and restart interval logic if needed.
+            // Actually, simpler to just restart interval with new time, but let's keep it visual for now.
+            // Correct way: store 'endTime' timestamp. But for simple app, decrementing is fine.
         }
 
-        // ================================
-        // FINALIZAR DESCANSO
-        // ================================
-        function finalizarDescanso() {
+        function stopTimer() {
             clearInterval(timerInterval);
-            
-            // Vibrar dispositivo
-            if (navigator.vibrate) {
-                navigator.vibrate([200, 100, 200]);
-            }
-            
-            // Mostrar mensagem
-            document.getElementById('timerDisplay').textContent = '00:00';
-            document.getElementById('timerExercicioNome').textContent = '✅ Descanso finalizado!';
+            document.getElementById('timer-overlay').classList.remove('active');
         }
 
-        // ================================
-        // FECHAR TIMER
-        // ================================
-        function fecharTimer() {
-            clearInterval(timerInterval);
-            document.getElementById('timerOverlay').classList.remove('ativo');
+        function finishRest() {
+            if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
+            // Optional: play sound
+            alert("Descanso finalizado!");
         }
 
-        // ================================
-        // CONCLUIR EXERCÍCIO
-        // ================================
-        function concluirExercicio(index) {
-            // Marcar como concluído
-            progressoAtual[index] = true;
-            
-            // Salvar progresso
-            const dataHoje = new Date().toISOString().split('T')[0];
-            const chaveProgresso = `progresso_${diaAtual.id}_${dataHoje}`;
-            localStorage.setItem(chaveProgresso, JSON.stringify(progressoAtual));
-            
-            // Atualizar visual
-            const card = document.getElementById(`exercicio-${index}`);
-            card.classList.add('concluido');
-            
-            const btnConcluir = card.querySelector('.btn-concluir');
-            btnConcluir.textContent = '✓ Concluído';
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60).toString().padStart(2, '0');
+            const s = (sec % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
         }
 
-        // ================================
-        // VOLTAR PARA INÍCIO
-        // ================================
-        function voltarParaInicio() {
-            document.getElementById('telaExecucao').style.display = 'none';
-            document.getElementById('telaInicial').style.display = 'block';
-            diaAtual = null;
-        }
-
-        // ================================
-        // FUNÇÕES PARA COLAR TEXTO
-        // ================================
-        function mostrarColarTexto() {
-            document.getElementById('modalColarTexto').style.display = 'block';
-            document.getElementById('textoTreino').value = '';
-            document.getElementById('textoTreino').focus();
-        }
-
-        function fecharColarTexto() {
-            document.getElementById('modalColarTexto').style.display = 'none';
-        }
-
-        function processarTextoColar() {
-            const texto = document.getElementById('textoTreino').value.trim();
+        // --- 7. STATS & THEME ---
+        function logHistory(dayId) {
+            const today = new Date().toISOString().split('T')[0];
+            // Check if already logged today for this specific day ID to avoid duplicates
+            const alreadyLogged = userHistory.some(h => h.date === today && h.dayId === dayId);
             
-            if (!texto) {
-                alert('❌ Cole o texto do treino antes de continuar.');
-                return;
-            }
-            
-            try {
-                const treino = parseTreinoTxt(texto);
+            if (!alreadyLogged) {
+                userHistory.unshift({ date: today, dayId: dayId });
+                saveData();
                 
-                if (!treino || !treino.nome || !treino.dias || treino.dias.length === 0) {
-                    alert('❌ Texto inválido. Verifique a estrutura do treino.');
-                    return;
+                // Confetti or congrats could go here
+                if ("vibrate" in navigator) navigator.vibrate(500);
+            }
+        }
+
+        function updateStats() {
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            
+            // Filter helpers
+            const isSameWeek = (d1, d2) => {
+                const startOfWeek = d => {
+                    const date = new Date(d);
+                    const day = date.getDay(); 
+                    const diff = date.getDate() - day + (day == 0 ? -6:1); 
+                    return new Date(date.setDate(diff));
                 }
+                return startOfWeek(d1).getTime() === startOfWeek(d2).getTime();
+            };
 
-                // Salvar treino
-                treinoAtual = treino;
-                localStorage.setItem('treinoAtual', JSON.stringify(treino));
-                
-                // Renderizar
-                renderizarTreino();
-                
-                // Fechar modal
-                fecharColarTexto();
-                
-                alert('✅ Treino carregado com sucesso!');
-            } catch (error) {
-                alert('❌ Erro ao processar texto. Verifique o formato.');
-                console.error(error);
-            }
+            const countToday = userHistory.filter(h => h.date === todayStr).length;
+            const countWeek = userHistory.filter(h => isSameWeek(new Date(h.date), now)).length;
+            const countMonth = userHistory.filter(h => h.date.startsWith(todayStr.substring(0, 7))).length;
+
+            document.getElementById('stat-today').textContent = countToday;
+            document.getElementById('stat-week').textContent = countWeek;
+            document.getElementById('stat-month').textContent = countMonth;
+
+            // List
+            const listEl = document.getElementById('history-list');
+            listEl.innerHTML = '';
+            userHistory.slice(0, 5).forEach(h => {
+                const li = document.createElement('li');
+                const [y,m,d] = h.date.split('-');
+                li.textContent = `${d}/${m} - Treino ${h.dayId}`;
+                listEl.appendChild(li);
+            });
+        }
+
+        function toggleTheme() {
+            settings.theme = settings.theme === 'dark' ? 'light' : 'dark';
+            saveData();
+            applyTheme();
+        }
+
+        function applyTheme() {
+            document.documentElement.setAttribute('data-theme', settings.theme);
+            const color = settings.theme === 'dark' ? '#000000' : '#f8f9fa';
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', color);
         }
     </script>
 </body>

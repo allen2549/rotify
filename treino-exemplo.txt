@@ -1,0 +1,21 @@
+# Projeto Iron Le
+## A - Peito e Tríceps
+Supino Reto | 4 x 8-10 | 90
+Supino Inclinado Halteres | 3 x 10-12 | 60
+Crucifixo Máquina | 3 x 12 | 60
+Tríceps Corda | 4 x 12 | 60
+Tríceps Testa | 3 x 10 | 60
+
+## B - Costas e Bíceps
+Puxada Alta | 4 x 10 | 90
+Remada Curvada | 4 x 8-10 | 90
+Serrote Unilateral | 3 x 12 | 60
+Rosca Direta Barra W | 4 x 10 | 60
+Rosca Martelo | 3 x 12 | 60
+
+## C - Pernas e Ombros
+Agachamento Livre | 4 x 8 | 120
+Leg Press 45 | 4 x 10-12 | 90
+Cadeira Extensora | 3 x 15 | 60
+Desenvolvimento Halteres | 4 x 10 | 90
+Elevação Lateral | 4 x 12-15 | 60
