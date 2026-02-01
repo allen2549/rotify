@@ -471,9 +471,71 @@
             <div id="uploadSection">
                 <div class="upload-area" onclick="document.getElementById('fileInput').click()">
                     <div style="font-size: 48px;">📁</div>
-                    <p>Toque para carregar seu treino (.txt)</p>
+                    <p>Toque para carregar arquivo</p>
                 </div>
-                <input type="file" id="fileInput" accept=".txt">
+                <input type="file" id="fileInput">
+                
+                <div style="padding: 0 20px; margin-top: 20px;">
+                    <div style="text-align: center; margin-bottom: 12px; color: #8e8e93; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">ou</div>
+                    <button class="btn btn-secondary" onclick="mostrarColarTexto()">
+                        📋 Colar texto do treino
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal para colar texto -->
+            <div id="modalColarTexto" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 2000; padding: 20px; overflow-y: auto;">
+                <div style="max-width: 600px; margin: 0 auto; padding-top: 40px;">
+                    <h2 style="font-size: 28px; margin-bottom: 8px; letter-spacing: -0.5px; font-weight: 600;">Colar treino</h2>
+                    <p style="color: #8e8e93; margin-bottom: 24px; font-size: 15px; line-height: 1.4;">
+                        Cole o texto do seu treino aqui. <br>
+                        <span style="font-size: 13px; color: #636366;">Formato: Nome | Séries x Reps | Tempo</span>
+                    </p>
+                    
+                    <textarea id="textoTreino" style="
+                        width: 100%;
+                        min-height: 350px;
+                        background: #1c1c1e;
+                        border: 0.5px solid #2c2c2e;
+                        border-radius: 12px;
+                        color: #ffffff;
+                        padding: 16px;
+                        font-size: 14px;
+                        font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+                        resize: vertical;
+                        margin-bottom: 12px;
+                        line-height: 1.5;
+                    " placeholder="Meu Treino ABC
+
+[A]
+Peito e Tríceps
+- Supino reto | 4x10 | 90s
+- Crucifixo | 3x12 | 60s
+
+[B]
+Costas e Bíceps
+- Barra fixa | 4x8 | 90s
+- Remada | 3x12 | 75s"></textarea>
+                    
+                    <div style="background: #1c1c1e; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 0.5px solid #2c2c2e;">
+                        <div style="font-size: 13px; color: #8e8e93; margin-bottom: 8px;">💡 Dica rápida:</div>
+                        <div style="font-size: 13px; color: #ffffff; line-height: 1.6;">
+                            • Primeira linha: nome do treino<br>
+                            • [A], [B], [C]: marcam cada dia<br>
+                            • Linha após [A]: nome do dia<br>
+                            • Exercícios começam com "-"
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-primary" onclick="processarTextoColar()" style="flex: 1;">
+                            Carregar treino
+                        </button>
+                        <button class="btn btn-secondary" onclick="fecharColarTexto()" style="flex: 1;">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div id="diasContainer" class="dias-container hidden">
@@ -916,6 +978,52 @@
             document.getElementById('telaExecucao').style.display = 'none';
             document.getElementById('telaInicial').style.display = 'block';
             diaAtual = null;
+        }
+
+        // ================================
+        // FUNÇÕES PARA COLAR TEXTO
+        // ================================
+        function mostrarColarTexto() {
+            document.getElementById('modalColarTexto').style.display = 'block';
+            document.getElementById('textoTreino').value = '';
+            document.getElementById('textoTreino').focus();
+        }
+
+        function fecharColarTexto() {
+            document.getElementById('modalColarTexto').style.display = 'none';
+        }
+
+        function processarTextoColar() {
+            const texto = document.getElementById('textoTreino').value.trim();
+            
+            if (!texto) {
+                alert('❌ Cole o texto do treino antes de continuar.');
+                return;
+            }
+            
+            try {
+                const treino = parseTreinoTxt(texto);
+                
+                if (!treino || !treino.nome || !treino.dias || treino.dias.length === 0) {
+                    alert('❌ Texto inválido. Verifique a estrutura do treino.');
+                    return;
+                }
+
+                // Salvar treino
+                treinoAtual = treino;
+                localStorage.setItem('treinoAtual', JSON.stringify(treino));
+                
+                // Renderizar
+                renderizarTreino();
+                
+                // Fechar modal
+                fecharColarTexto();
+                
+                alert('✅ Treino carregado com sucesso!');
+            } catch (error) {
+                alert('❌ Erro ao processar texto. Verifique o formato.');
+                console.error(error);
+            }
         }
     </script>
 </body>
