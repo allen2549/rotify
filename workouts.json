@@ -1,0 +1,150 @@
+[
+  {
+    "id": "abc_iniciante",
+    "title": "Adaptação ABC",
+    "description": "Foco em adaptação muscular e aprendizado de movimento. Ideal para retorno aos treinos.",
+    "level": "Iniciante",
+    "days": [
+      {
+        "id": "A",
+        "name": "Empurrar (Peito/Ombro/Tríceps)",
+        "exercises": [
+          { "name": "Supino Reto Halteres", "sets": "3x12", "rest": 60 },
+          { "name": "Desenvolvimento Máquina", "sets": "3x12", "rest": 60 },
+          { "name": "Tríceps Corda", "sets": "3x15", "rest": 45 }
+        ]
+      },
+      {
+        "id": "B",
+        "name": "Puxar (Costas/Bíceps)",
+        "exercises": [
+          { "name": "Puxada Frontal", "sets": "3x12", "rest": 60 },
+          { "name": "Remada Baixa", "sets": "3x12", "rest": 60 },
+          { "name": "Rosca Direta", "sets": "3x12", "rest": 45 }
+        ]
+      },
+      {
+        "id": "C",
+        "name": "Pernas Completo",
+        "exercises": [
+          { "name": "Leg Press 45", "sets": "3x15", "rest": 90 },
+          { "name": "Cadeira Extensora", "sets": "3x15", "rest": 60 },
+          { "name": "Mesa Flexora", "sets": "3x15", "rest": 60 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "upper_lower",
+    "title": "Upper / Lower 4x",
+    "description": "Divisão clássica para intermediários. Frequência de 2x por semana por grupo muscular.",
+    "level": "Intermediário",
+    "days": [
+      {
+        "id": "A1",
+        "name": "Upper (Superior)",
+        "exercises": [
+          { "name": "Supino Reto", "sets": "4x8", "rest": 120 },
+          { "name": "Remada Curvada", "sets": "4x8", "rest": 120 }
+        ]
+      },
+      {
+        "id": "B1",
+        "name": "Lower (Inferior)",
+        "exercises": [
+          { "name": "Agachamento Livre", "sets": "4x8", "rest": 180 },
+          { "name": "Stiff", "sets": "3x10", "rest": 120 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "iron_le_abc",
+    "title": "Projeto Iron Le",
+    "description": "Treino ABC com foco em hipertrofia, progressão de carga e volume moderado.",
+    "level": "Intermediário",
+    "days": [
+      {
+        "id": "A",
+        "name": "Peito e Tríceps",
+        "exercises": [
+          { "name": "Supino Reto", "sets": "4x8-10", "rest": 90 },
+          { "name": "Supino Inclinado Halteres", "sets": "3x10-12", "rest": 60 },
+          { "name": "Crucifixo Máquina", "sets": "3x12", "rest": 60 },
+          { "name": "Tríceps Corda", "sets": "4x12", "rest": 60 },
+          { "name": "Tríceps Testa", "sets": "3x10", "rest": 60 }
+        ]
+      },
+      {
+        "id": "B",
+        "name": "Costas e Bíceps",
+        "exercises": [
+          { "name": "Puxada Alta", "sets": "4x10", "rest": 90 },
+          { "name": "Remada Curvada", "sets": "4x8-10", "rest": 90 },
+          { "name": "Serrote Unilateral", "sets": "3x12", "rest": 60 },
+          { "name": "Rosca Direta Barra W", "sets": "4x10", "rest": 60 },
+          { "name": "Rosca Martelo", "sets": "3x12", "rest": 60 }
+        ]
+      },
+      {
+        "id": "C",
+        "name": "Pernas e Ombros",
+        "exercises": [
+          { "name": "Agachamento Livre", "sets": "4x8", "rest": 120 },
+          { "name": "Leg Press 45", "sets": "4x10-12", "rest": 90 },
+          { "name": "Cadeira Extensora", "sets": "3x15", "rest": 60 },
+          { "name": "Desenvolvimento Halteres", "sets": "4x10", "rest": 90 },
+          { "name": "Elevação Lateral", "sets": "4x12-15", "rest": 60 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "padroniza26",
+    "title": "Padroniza26",
+    "description": "Treino ABC com foco em padronização, intensidade controlada e descanso curto.",
+    "level": "Intermediário",
+    "days": [
+      {
+        "id": "A",
+        "name": "Peito, Ombros e Tríceps",
+        "exercises": [
+          { "name": "Supino Articulado", "sets": "3x12", "rest": 30 },
+          { "name": "Supino Inclinado Halteres", "sets": "4x10", "rest": 30 },
+          { "name": "Crucifixo Máquina", "sets": "3x15", "rest": 30 },
+          { "name": "Desenvolvimento Articulado", "sets": "3x12", "rest": 30 },
+          { "name": "Elevação Lateral", "sets": "3x10", "rest": 30 },
+          { "name": "Tríceps Barra", "sets": "4x12", "rest": 30 },
+          { "name": "Tríceps Francês", "sets": "3x15", "rest": 30 }
+        ]
+      },
+      {
+        "id": "B",
+        "name": "Pernas e Abdômen",
+        "exercises": [
+          { "name": "Leg Press 45", "sets": "4x12", "rest": 30 },
+          { "name": "Cadeira Extensora", "sets": "4x15", "rest": 30 },
+          { "name": "Cadeira Flexora", "sets": "4x15", "rest": 30 },
+          { "name": "Afundo com Halteres", "sets": "3x10", "rest": 30 },
+          { "name": "Cadeira Abdutora", "sets": "4x15", "rest": 30 },
+          { "name": "Panturrilha Livre", "sets": "4x15", "rest": 30 },
+          { "name": "Abdominal Prancha", "sets": "4x40s", "rest": 30 }
+        ]
+      },
+      {
+        "id": "C",
+        "name": "Costas, Bíceps e Abdômen",
+        "exercises": [
+          { "name": "Puxada Aberta", "sets": "4x12", "rest": 30 },
+          { "name": "Remada Neutra Articulada", "sets": "3x12", "rest": 30 },
+          { "name": "Remada Curvada Pronada", "sets": "4x10", "rest": 30 },
+          { "name": "Rosca Direta Barra", "sets": "4x10", "rest": 30 },
+          { "name": "Rosca Martelo Halteres", "sets": "3x12", "rest": 30 },
+          { "name": "Abdominal Bicicleta", "sets": "4x20", "rest": 30 },
+          { "name": "Abdominal Supra", "sets": "4x15", "rest": 30 }
+        ]
+      }
+    ]
+  }
+]
+
