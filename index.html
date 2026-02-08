@@ -150,6 +150,49 @@
             box-shadow: 0 4px 15px rgba(220, 39, 67, 0.4);
         }
 
+        /* Botão Neon (Ação Principal) */
+        .btn-neon {
+            background: #ccff00; /* Verde Neon */
+            color: #000000;      /* Texto Preto para contraste máximo */
+            border: none;
+            padding: 16px 24px;
+            border-radius: 50px; /* Borda redonda estilo iOS */
+            font-size: 16px;
+            font-weight: 900;    /* Fonte bem grossa */
+            letter-spacing: 1px;
+            flex: 2;             /* Ocupa mais espaço que o fechar */
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(204, 255, 0, 0.4); /* Brilho neon */
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+        }
+        .btn-neon:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 10px rgba(204, 255, 0, 0.6);
+        }
+
+        /* Botão Ghost (Fechar) */
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            flex: 1;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+        .btn-ghost:active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* GARANTIA DE CLIQUE: Força o overlay a aceitar toques quando ativo */
+        #share-overlay.active {
+            pointer-events: auto !important; /* Importante para garantir o clique */
+        }
+        
     </style>
 </head>
 <body>
@@ -292,18 +335,11 @@
     </div>
 
     <div id="share-overlay">
-        <h2 style="color:white; margin-bottom:10px;">Check-in Concluído! 🔥</h2>
-        <p class="subtext" style="margin-bottom:20px; color:#ccc;">Salve e poste no seu story.</p>
-        
         <canvas id="share-canvas" width="1080" height="1920"></canvas>
-
-        <div style="display:flex; gap:10px; width:100%; max-width:350px;">
-            <button class="btn" onclick="downloadShare()" style="background:linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888, #8a3ab9);">
-                📸 Baixar para Insta
-            </button>
-            <button class="btn-glass" onclick="closeShare()" style="background:rgba(255,255,255,0.2); color:white;">
-                Fechar
-            </button>
+        
+        <div style="display:flex; gap:15px; width:100%; max-width:400px; justify-content: center; z-index: 301;">
+            <button class="btn-neon" onclick="downloadShare()">Baixar</button>
+            <button class="btn-ghost" onclick="closeShare()">Fechar</button>
         </div>
     </div>
 
@@ -632,11 +668,66 @@
         function addTime(s){ const d=document.getElementById('timer-val'); let v=parseInt(d.innerText)+s; d.innerText=v; }
     
     // --- GERADOR DE POSTAGEM (VISUAL GYMRAT / LIQUID NEON) ---
+
+    // --- FUNÇÕES DOS BOTÕES DE CHECK-IN ---
+
+    function downloadShare() {
+        const canvas = document.getElementById('share-canvas');
+        
+        // Verifica se o canvas foi gerado
+        if(!canvas) return alert("Erro: Imagem não encontrada.");
+
+        try {
+            // Cria link temporário de download
+            const link = document.createElement('a');
+            const date = new Date().toISOString().slice(0,10);
+            link.download = `IRON-LE-CHECKIN-${date}.png`;
+            
+            // Converte o canvas para imagem PNG
+            link.href = canvas.toDataURL('image/png', 1.0); // Qualidade máxima
+            
+            // Força o clique para baixar
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+        } catch(e) {
+            console.error(e);
+            alert("Ops! Se não baixar, tire um print da tela! 📸");
+        }
+    }
+
+    function closeShare() {
+        const overlay = document.getElementById('share-overlay');
+        // Remove a classe active para esconder
+        overlay.classList.remove('active');
+        
+        // Opcional: Voltar para a Home ou limpar o canvas para economizar memória
+        setTimeout(() => {
+            navTo('home'); 
+        }, 300); // Espera a animação de fade-out
+    }
+
     function generateShareCard(day) {
         const overlay = document.getElementById('share-overlay');
         const canvas = document.getElementById('share-canvas');
         const ctx = canvas.getContext('2d');
         
+        // Polimento: Garante que o método roundRect exista (para navegadores mais antigos)
+        if (!ctx.roundRect) {
+            ctx.roundRect = function (x, y, w, h, r) {
+                if (w < 2 * r) r = w / 2;
+                if (h < 2 * r) r = h / 2;
+                this.beginPath();
+                this.moveTo(x + r, y);
+                this.arcTo(x + w, y, x + w, y + h, r);
+                this.arcTo(x + w, y + h, x, y + h, r);
+                this.arcTo(x, y + h, x, y, r);
+                this.arcTo(x, y, x + w, y, r);
+                this.closePath();
+                return this;
+            };
+        }
         // Dimensões de Story (Alta Resolução)
         canvas.width = 1080;
         canvas.height = 1920;
