@@ -626,6 +626,112 @@
         }
         function stopTimer(){ clearInterval(tInt); document.getElementById('timer-overlay').classList.remove('active'); }
         function addTime(s){ const d=document.getElementById('timer-val'); let v=parseInt(d.innerText)+s; d.innerText=v; }
+    
+    // --- SHARE / CHECK-IN SYSTEM ---
+
+    function generateShareCard(day) {
+        const overlay = document.getElementById('share-overlay');
+        const canvas = document.getElementById('share-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // 1. Configurar Fundo (Dark Mode elegante estilo Gymrats)
+        const grd = ctx.createLinearGradient(0, 0, 0, 1920);
+        grd.addColorStop(0, "#1c1c1e");
+        grd.addColorStop(1, "#000000");
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, 1080, 1920);
+
+        // 2. Elementos Gráficos (Círculos decorativos)
+        ctx.beginPath();
+        ctx.arc(540, 960, 400, 0, 2 * Math.PI);
+        ctx.fillStyle = "rgba(10, 132, 255, 0.05)"; // Cor primária transparente
+        ctx.fill();
+
+        // 3. Textos
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#ffffff";
+
+        // Header "IRON LE"
+        ctx.font = "bold 60px -apple-system, sans-serif";
+        ctx.globalAlpha = 0.5;
+        ctx.fillText("IRON LE v4", 540, 150);
+        ctx.globalAlpha = 1.0;
+
+        // Ícone Grande (Check ou Fogo)
+        ctx.font = "300px serif"; // Emoji renderiza melhor assim em alguns browsers
+        ctx.fillText("🔥", 540, 600);
+
+        // Título "TREINO CONCLUÍDO"
+        ctx.font = "900 80px -apple-system, sans-serif";
+        ctx.fillText("CHECK-IN REALIZADO", 540, 850);
+
+        // Detalhes do Treino (Caixa de Vidro desenhada)
+        ctx.fillStyle = "rgba(255,255,255,0.1)";
+        ctx.roundRect(140, 950, 800, 400, 40);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,0.2)";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        // Dados dentro da caixa
+        ctx.fillStyle = "#ffffff";
+        
+        // Nome do Treino
+        ctx.font = "bold 70px -apple-system, sans-serif";
+        ctx.fillText(day.name, 540, 1100);
+        
+        // Dia da Semana / Data
+        const dateStr = new Date().toLocaleDateString('pt-BR', {weekday: 'long', day: 'numeric', month: 'long'});
+        ctx.font = "40px -apple-system, sans-serif";
+        ctx.fillStyle = "#cccccc";
+        ctx.fillText(dateStr.toUpperCase(), 540, 1200);
+
+        // Estatística simples (Ex: Total de exercícios)
+        ctx.fillStyle = "#0a84ff"; // Cor primária
+        ctx.font = "bold 50px -apple-system, sans-serif";
+        ctx.fillText(`${day.exercises.length} EXERCÍCIOS FINALIZADOS`, 540, 1300);
+
+        // Rodapé (Nome do Usuário)
+        ctx.fillStyle = "#555555";
+        ctx.font = "40px -apple-system, sans-serif";
+        ctx.fillText(`Atleta: ${DB.user.name}`, 540, 1800);
+
+        // Mostrar Overlay
+        overlay.classList.add('active');
+    }
+
+    function downloadShare() {
+        const canvas = document.getElementById('share-canvas');
+        // Cria um link temporário para download
+        const link = document.createElement('a');
+        link.download = `checkin-iron-le-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
+
+    function closeShare() {
+        document.getElementById('share-overlay').classList.remove('active');
+        // Volta para home após fechar
+        navTo('home');
+        renderHome();
+    }
+
+    // Polyfill simples para roundRect em navegadores antigos, se precisar
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+        CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+            if (w < 2 * r) r = w / 2;
+            if (h < 2 * r) r = h / 2;
+            this.beginPath();
+            this.moveTo(x + r, y);
+            this.arcTo(x + w, y, x + w, y + h, r);
+            this.arcTo(x + w, y + h, x, y + h, r);
+            this.arcTo(x, y + h, x, y, r);
+            this.arcTo(x, y, x + w, y, r);
+            this.closePath();
+            return this;
+        };
+    }
+    
     </script>
 </body>
 </html>
